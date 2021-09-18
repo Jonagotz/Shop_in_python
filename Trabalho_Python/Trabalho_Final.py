@@ -168,7 +168,7 @@ def cria_produtos(lista_produtos):
 # 1 - Cadastro do cliente
 
 
-def cadastramento(lista_usuarios, usuario_logado):
+def cadastramento(lista_usuarios):
     usuario = usuarios()
     while True:
         # pedindo nome
@@ -265,7 +265,6 @@ def cadastramento(lista_usuarios, usuario_logado):
         usuario.cartãonumero = Cartão
         usuario.cartãosenha = Senha_Cartão
         lista_usuarios.append(usuario)
-        usuario_logado = usuario
         return True
 
 # 2 - Consultar cliente
@@ -280,9 +279,54 @@ def consulta_cliente(lista_usuarios):
         elif cpf_consulta != usuario.cpf:
             print("Usuário não cadastrado\n")
 
-#3 - Compra
+
+# 3 - Login (TESTAR BEM)
+def login(lista_usuarios, usuario_logado, nivel_de_permissão):
+    if len(lista_usuarios) == 0:
+        dummy_user = usuarios()
+        dummy_user.email = "@.com"  # so pra checar o codigo, tirar depois
+        dummy_user.senha = "1234"  # so pra checar o codigo, tirar depois
+        lista_usuarios.append(dummy_user)
+    while True:
+        Email = input("Digite o seu email: ")
+        for i in range(len(lista_usuarios)):
+            if Email == lista_usuarios[i].email:
+                Senha = input("Digite a sua senha: ")
+                for j in range(len(lista_usuarios)):
+                    if Senha == lista_usuarios[i].senha and Email == "AdminSuperFoda@MeuServiçoDeEmail.com":
+                        print(f"Bem vindo(a) Admin {lista_usuarios[i].nome}!")
+                        usuario_logado.nome = lista_usuarios[i].nome
+                        usuario_logado.cpf = lista_usuarios[i].cpf
+                        usuario_logado.email = lista_usuarios[i].email
+                        usuario_logado.senha = lista_usuarios[i].senha
+                        usuario_logado.limitecredito = lista_usuarios[i].limitecredito
+                        usuario_logado.balanço = lista_usuarios[i].balanço
+                        usuario_logado.cartãonumero = lista_usuarios[i].cartãonumero
+                        usuario_logado.cartãosenha = lista_usuarios[i].cartãosenha
+                        usuario_logado.lista_carrinho = lista_usuarios[i].lista_carrinho
+                        nivel_de_permissão.append(2)
+                        return lista_usuarios, usuario_logado, nivel_de_permissão
+                    elif Senha == lista_usuarios[i].senha:
+                        print(f"Bem vindo(a) {lista_usuarios[i].nome}!")
+                        usuario_logado.nome = lista_usuarios[i].nome
+                        usuario_logado.cpf = lista_usuarios[i].cpf
+                        usuario_logado.email = lista_usuarios[i].email
+                        usuario_logado.senha = lista_usuarios[i].senha
+                        usuario_logado.limitecredito = lista_usuarios[i].limitecredito
+                        usuario_logado.balanço = lista_usuarios[i].balanço
+                        usuario_logado.cartãonumero = lista_usuarios[i].cartãonumero
+                        usuario_logado.cartãosenha = lista_usuarios[i].cartãosenha
+                        usuario_logado.lista_carrinho = lista_usuarios[i].lista_carrinho
+                        nivel_de_permissão.append(1)
+                        return lista_usuarios, usuario_logado, nivel_de_permissão
+                    elif Senha != lista_usuarios[i].senha:
+                        print("Senha incorreta")
+            else:
+                print("Esse email está incorreto e/ou não cadastrado")
+                return
 
 
+# 4 - Compra
 # dar uns continues ou while true pra continuar a perguntar (nos lugar certo), testar
 def compra(usuario_logado):
     produto_comprar = input("Digite o produto que gotaria de comprar: ")
@@ -331,7 +375,7 @@ def compra(usuario_logado):
         else:
             print("Esse produto não se encontra na lista. Tente novamente")
 
-# 4 Carrinho de compras
+# 5 - Carrinho de compras
 
 
 def Add_Carrinho(usuario_logado, lista_usuarios, lista_produtos):
@@ -364,7 +408,7 @@ def Add_Carrinho(usuario_logado, lista_usuarios, lista_produtos):
         print("Numero invalido.")
         return
 
-# 4.01 Carrinho de compras (testar) Adicionar item ao carrinho (testar) (adiconar a opção DO MENU para listar os produtos? seria legal pela integração, não precisar voltar ao menu e tals)
+# 5.01 Carrinho de compras (testar) Adicionar item ao carrinho (testar) (adiconar a opção DO MENU para listar os produtos? seria legal pela integração, não precisar voltar ao menu e tals)
 
 
 def listar_carrinho(usuario_logado, lista_carrinho):
@@ -372,7 +416,20 @@ def listar_carrinho(usuario_logado, lista_carrinho):
         print(produtos.nome + " ", produtos.valor)
     print()
 
-# 5 acidionar credito
+# 6 Lista produtos
+# chamar ela dentro das funções onde lista os produtos - Pedro
+
+
+def listar_produtos(lista_produtos):
+    for produtos in lista_produtos:
+        print(produtos.nome, end=" da marca ")
+        print(f"'{produtos.marca}'", end=" fabricado em ")
+        print(produtos.origem, end=" por ")
+        print(f"R${produtos.valor}")
+        print()
+    print()  # função pronta
+
+# 7 acidionar credito
 
 
 def adicionar_balanço(usuario_logado):  # testar
@@ -396,7 +453,7 @@ def adicionar_balanço(usuario_logado):  # testar
             print("returnando ao menu...")
             return
 
-# 6 Adicione Produto: (admin only) checar o check na lista, não sei se é pel
+# 8 Adicione Produto: (admin only) checar o check na lista, não sei se é pel
 
 
 def novo_produto(lista_produtos):
@@ -427,65 +484,6 @@ def novo_produto(lista_produtos):
                 return
             else:
                 continue
-
-# 7 Lista produtos
-
-
-# chamar ela dentro das funções onde lista os produtos - Pedro
-def listar_produtos(lista_produtos):
-    for produtos in lista_produtos:
-        print(produtos.nome, end=" da marca ")
-        print(f"'{produtos.marca}'", end=" fabricado em ")
-        print(produtos.origem, end=" por ")
-        print(f"R${produtos.valor}")
-        print()
-    print()  # função pronta
-
-# 8 Login (TESTAR BEM)
-
-
-def login(lista_usuarios, usuario_logado, nivel_de_permissão):
-    if len(lista_usuarios) == 0:
-        dummy_user = usuarios()
-        dummy_user.email = "@.com"  # so pra checar o codigo, tirar depois
-        dummy_user.senha = "1234"  # so pra checar o codigo, tirar depois
-        lista_usuarios.append(dummy_user)
-    Email = input("Digite o seu email: ")
-    for i in range(len(lista_usuarios)):
-        if Email == lista_usuarios[i].email:
-            Senha = input("Digite a sua senha: ")
-            for j in range(len(lista_usuarios)):
-                if Senha == lista_usuarios[i].senha and Email == "AdminSuperFoda@MeuServiçoDeEmail.com":
-                    print(f"Bem vindo(a) Admin {lista_usuarios[i].nome}!")
-                    usuario_logado.nome = lista_usuarios[i].nome
-                    usuario_logado.cpf = lista_usuarios[i].cpf
-                    usuario_logado.email = lista_usuarios[i].email
-                    usuario_logado.senha = lista_usuarios[i].senha
-                    usuario_logado.limitecredito = lista_usuarios[i].limitecredito
-                    usuario_logado.balanço = lista_usuarios[i].balanço
-                    usuario_logado.cartãonumero = lista_usuarios[i].cartãonumero
-                    usuario_logado.cartãosenha = lista_usuarios[i].cartãosenha
-                    usuario_logado.lista_carrinho = lista_usuarios[i].lista_carrinho
-                    nivel_de_permissão.append(2)
-                    return lista_usuarios, usuario_logado, nivel_de_permissão
-                elif Senha == lista_usuarios[i].senha:
-                    print(f"Bem vindo(a) {lista_usuarios[i].nome}!")
-                    usuario_logado.nome = lista_usuarios[i].nome
-                    usuario_logado.cpf = lista_usuarios[i].cpf
-                    usuario_logado.email = lista_usuarios[i].email
-                    usuario_logado.senha = lista_usuarios[i].senha
-                    usuario_logado.limitecredito = lista_usuarios[i].limitecredito
-                    usuario_logado.balanço = lista_usuarios[i].balanço
-                    usuario_logado.cartãonumero = lista_usuarios[i].cartãonumero
-                    usuario_logado.cartãosenha = lista_usuarios[i].cartãosenha
-                    usuario_logado.lista_carrinho = lista_usuarios[i].lista_carrinho
-                    nivel_de_permissão.append(1)
-                    return lista_usuarios, usuario_logado, nivel_de_permissão
-                elif Senha != lista_usuarios[i].senha:
-                    print("Senha incorreta")
-        else:
-            print("Esse email está incorreto e/ou não cadastrado")
-            return
 
 
 '''
@@ -524,7 +522,7 @@ def menu():
     lista_produtos = []
     nivel_de_permissão = [0]
     while True:
-        opcao = input("Olá, Seja bem vindo! Esse é o menu principal, escolha dentre as seguinte opções:\n\n1- Cadastro\n2- Consultar cliente\n3- Compra\n4- Carrinho de compras\n5- Adicionar Balanço\n6- Adicionar item\n7- Ver catálogo de produtos\n8- Login\n0- Sair\n")
+        opcao = input("Olá, Seja bem vindo! Esse é o menu principal, escolha dentre as seguinte opções:\n\n1- Cadastro\n2- Consultar cliente\n3- Login\n4- Compra\n5- Carrinho de compra\n6- Catálogo de produtos\n7- Adionar balanço\n8- Adicionar item\n0- Sair\n")
         if opcao == "1":
             print("Opção selecionada: Cadastro")
             if cadastramento(lista_usuarios, usuario_logado):
@@ -537,54 +535,7 @@ def menu():
             lista_usuarios.append(usuario)
             consulta_cliente(lista_usuarios)
 
-        elif opcao == "3":
-            print(nivel_de_permissão)
-            if nivel_de_permissão[-1] != 0:
-                print("Opção selecionada: Compra\n")
-                # ta aqui pra não printar de novo se o cliente errar o nome do produto - Pedro
-                print(usuario_logado.lista_carrinho)
-                compra(usuario_logado)  # usar a lista_carrinho dele
-            else:
-                print("Faça o login para acessar essa opção\n")
-
-        elif opcao == "4":
-            if nivel_de_permissão[-1] != 0:
-                print("Opção selecionada: Carrinho de compras\n")
-                cria_produtos(lista_produtos)
-                listar_produtos(lista_produtos)
-                listar_carrinho(usuario_logado.lista_carrinho)
-                Add_Carrinho(usuario_logado, lista_produtos, lista_produtos)
-            else:
-                print("Faça o login para acessar essa opção\n")
-
-        elif opcao == "5":
-            if nivel_de_permissão[-1] != 0:
-                print("Opção selecionada: Adicionar Balanço\n")
-                adicionar_balanço(usuario_logado)
-            else:
-                print("Faça o login para acessar essa opção\n")
-
-        elif opcao == "6":
-            if nivel_de_permissão[-1] == 2:
-                print("Opção selecionada: Adicionar item\n")
-                cria_produtos(lista_produtos)
-                listar_produtos(lista_produtos)
-                novo_produto(lista_produtos)
-                listar_produtos(lista_produtos)
-            elif nivel_de_permissão[-1] == 1:
-                print("Essa opção é somente para admins\n")
-            elif nivel_de_permissão[-1] == 0:
-                print("Faça o login para acessar essa opção\n")
-
-        elif opcao == "7":
-            if nivel_de_permissão[-1] != 0:
-                print("Opção selecionada: Ver catálogo de produtos\n")
-                cria_produtos(lista_produtos)
-                listar_produtos(lista_produtos)
-            else:
-                print("Faça o login para acessar o catálogo\n")
-
-        elif opcao == "8":  # LEIA: levando o usuario_logado junto pra dar um clear e deixar as pessoas trocar de conta mesmo sem logout, ler o ultimo comentario ainda dentro do menu
+        elif opcao == "3":  # LEIA: levando o usuario_logado junto pra dar um clear e deixar as pessoas trocar de conta mesmo sem logout, ler o ultimo comentario ainda dentro do menu
             if nivel_de_permissão[-1] == 0:
                 print("Opção selecionada: Login\n")
                 login(lista_usuarios, usuario_logado, nivel_de_permissão)
@@ -599,6 +550,53 @@ def menu():
 
                 elif are_you_sure.upper() == "NAO":
                     continue
+
+        elif opcao == "4":
+            print(nivel_de_permissão)
+            if nivel_de_permissão[-1] != 0:
+                print("Opção selecionada: Compra\n")
+                # ta aqui pra não printar de novo se o cliente errar o nome do produto - Pedro
+                print(usuario_logado.lista_carrinho)
+                compra(usuario_logado)  # usar a lista_carrinho dele
+            else:
+                print("Faça o login para acessar essa opção\n")
+
+        elif opcao == "5":
+            if nivel_de_permissão[-1] != 0:
+                print("Opção selecionada: Carrinho de compras\n")
+                cria_produtos(lista_produtos)
+                listar_produtos(lista_produtos)
+                listar_carrinho(usuario_logado.lista_carrinho)
+                Add_Carrinho(usuario_logado, lista_produtos, lista_produtos)
+            else:
+                print("Faça o login para acessar essa opção\n")
+
+        elif opcao == "6":
+            if nivel_de_permissão[-1] != 0:
+                print("Opção selecionada: Ver catálogo de produtos\n")
+                cria_produtos(lista_produtos)
+                listar_produtos(lista_produtos)
+            else:
+                print("Faça o login para acessar o catálogo\n")
+
+        elif opcao == "7":
+            if nivel_de_permissão[-1] != 0:
+                print("Opção selecionada: Adicionar Balanço\n")
+                adicionar_balanço(usuario_logado)
+            else:
+                print("Faça o login para acessar essa opção\n")
+
+        elif opcao == "8":
+            if nivel_de_permissão[-1] == 2:
+                print("Opção selecionada: Adicionar item\n")
+                cria_produtos(lista_produtos)
+                listar_produtos(lista_produtos)
+                novo_produto(lista_produtos)
+                listar_produtos(lista_produtos)
+            elif nivel_de_permissão[-1] == 1:
+                print("Essa opção é somente para admins\n")
+            elif nivel_de_permissão[-1] == 0:
+                print("Faça o login para acessar essa opção\n")
 
         elif opcao == "0":
             print("Opção selecionada: Sair")
