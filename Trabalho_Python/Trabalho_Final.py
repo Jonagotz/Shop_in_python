@@ -189,18 +189,31 @@ def cadastramento(lista_usuarios):
         while aux == True:
             Cpf = input("Digite o seu CPF: ")
             numTem += 1
+            if numTem > 3:
+                print("Número de tentativas excedido! Tente novamente mais tarde")
+                break
             for user in lista_usuarios:
                 if Cpf == user.cpf:  # rever!!!!!!!!!!!!
                     print("Esse CPF já existe")
                     return
-            if len(Cpf) != 11:
-                print("Esse CPF é inválido, por favor digite novamente um CPF válido")
+            if len(Cpf) > 11:
+                print("Digite um CPF válido")
                 continue
-            elif numTem > 3:
-                print("Número de tentativas excedido, tente novamente mais tarde!")
-                break
-            else:
-                aux = False
+            '''Cpf = [int(char) for char in Cpf if char.isdigit()]
+            if len(Cpf) != 11:
+                print("CPF inválido")
+                continue
+            if Cpf == Cpf[::-1]:
+                print("CPF inválido")
+                continue
+            for i in range(9, 11):
+                value = sum((Cpf[num] * ((i+1) - num) for num in range(0, i)))
+                digit = ((value * 10) % 11) % 10
+                if digit != Cpf[i]:
+                    print("Cpf inválido")
+                    continue'''
+            aux = False
+        usuario.cpf = Cpf
         # pedindo email
         aux = True
         numTem = 0
@@ -236,8 +249,8 @@ def cadastramento(lista_usuarios):
         while aux == True:
             numTem += 1
             Senha_Cartão = input(
-                "Digite a senha do cartão(até 4 caracteres): ")
-            if len(Senha_Cartão) > 4:
+                "Digite a senha do cartão(4 caracteres): ")
+            if len(Senha_Cartão) != 4:
                 print("Senha invalida")
                 continue
             elif numTem > 3:
@@ -275,8 +288,9 @@ def consulta_cliente(lista_usuarios):
     for usuario in lista_usuarios:
         if cpf_consulta == usuario.cpf:
             print(f"O nome do cliente é {usuario.nome}")
-            print(f"O email do cliente é {usuario.email}\n")
-        elif cpf_consulta != usuario.cpf:
+            print(f"O email do cliente é {usuario.email}")
+            print(f"A senha do cliente é {usuario.senha}\n")
+        else:
             print("Usuário não cadastrado\n")
 
 
@@ -290,11 +304,12 @@ def login(lista_usuarios, usuario_logado, nivel_de_permissão):
     while True:
         Email = input("Digite o seu email: ")
         for i in range(len(lista_usuarios)):
-            if Email == lista_usuarios[i].email:
+            if Email == lista_usuarios[i].email or Email == "AdminSuperFoda@MeuServiçoDeEmail.com":
                 Senha = input("Digite a sua senha: ")
                 for j in range(len(lista_usuarios)):
                     if Senha == lista_usuarios[i].senha and Email == "AdminSuperFoda@MeuServiçoDeEmail.com":
-                        print(f"Bem vindo(a) Admin {lista_usuarios[i].nome}!")
+                        print(
+                            f"Bem vindo(a) Admin {lista_usuarios[i].nome}!\n")
                         usuario_logado.nome = lista_usuarios[i].nome
                         usuario_logado.cpf = lista_usuarios[i].cpf
                         usuario_logado.email = lista_usuarios[i].email
@@ -307,7 +322,7 @@ def login(lista_usuarios, usuario_logado, nivel_de_permissão):
                         nivel_de_permissão.append(2)
                         return lista_usuarios, usuario_logado, nivel_de_permissão
                     elif Senha == lista_usuarios[i].senha:
-                        print(f"Bem vindo(a) {lista_usuarios[i].nome}!")
+                        print(f"Bem vindo(a) {lista_usuarios[i].nome}!\n")
                         usuario_logado.nome = lista_usuarios[i].nome
                         usuario_logado.cpf = lista_usuarios[i].cpf
                         usuario_logado.email = lista_usuarios[i].email
@@ -321,9 +336,10 @@ def login(lista_usuarios, usuario_logado, nivel_de_permissão):
                         return lista_usuarios, usuario_logado, nivel_de_permissão
                     elif Senha != lista_usuarios[i].senha:
                         print("Senha incorreta")
+                        continue
             else:
                 print("Esse email está incorreto e/ou não cadastrado")
-                return
+                continue
 
 
 # 4 - Compra
@@ -525,7 +541,7 @@ def menu():
         opcao = input("Olá, Seja bem vindo! Esse é o menu principal, escolha dentre as seguinte opções:\n\n1- Cadastro\n2- Consultar cliente\n3- Login\n4- Compra\n5- Carrinho de compra\n6- Catálogo de produtos\n7- Adionar balanço\n8- Adicionar item\n0- Sair\n")
         if opcao == "1":
             print("Opção selecionada: Cadastro")
-            if cadastramento(lista_usuarios, usuario_logado):
+            if cadastramento(lista_usuarios):
                 print("\nCadastro realizado com sucesso\n")
 
         elif opcao == "2":
@@ -539,20 +555,16 @@ def menu():
             if nivel_de_permissão[-1] == 0:
                 print("Opção selecionada: Login\n")
                 login(lista_usuarios, usuario_logado, nivel_de_permissão)
-                print(nivel_de_permissão)
-
             elif nivel_de_permissão[-1] != 0:
-                are_you_sure = (
-                    "Tem certeza? Usar essa opção fará você sair de sua conta atual. Digite 'sim' para confirmar ou 'nao' para continuar na sessão atual: ")
+                are_you_sure = input(
+                    "Tem certeza? Usar essa opção fará você sair de sua conta atual. Digite 'sim' para confirmar ou 'nao' para continuar na sessão atual: \n")
                 if are_you_sure.upper() == "SIM":
                     print("Opção selecionada: Login\n")
                     login(lista_usuarios, usuario_logado, nivel_de_permissão)
-
                 elif are_you_sure.upper() == "NAO":
-                    continue
+                    return
 
         elif opcao == "4":
-            print(nivel_de_permissão)
             if nivel_de_permissão[-1] != 0:
                 print("Opção selecionada: Compra\n")
                 # ta aqui pra não printar de novo se o cliente errar o nome do produto - Pedro
@@ -619,3 +631,5 @@ R$ 50,00 = RJKSUJAPDN236
 R$ 100,00 = HBFTAPÇKOG187
 R$ 200,00 = JAEMBDFGPGA67
 '''
+
+# email de administrador = AdminSuperFoda@MeuServiçoDeEmail.com
