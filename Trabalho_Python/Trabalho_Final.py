@@ -318,7 +318,7 @@ def login(lista_usuarios, usuario_logado, nivel_de_permissão):
             if Email == lista_usuarios[i].email or Email == "AdminSuperFoda@gmail.com":
                 Senha = input("Digite a sua senha: ")
                 for j in range(len(lista_usuarios)):
-                    if Senha == lista_usuarios[i].senha and Email == "AdminSuperFoda@MeuServiçoDeEmail.com":
+                    if Senha == lista_usuarios[i].senha and Email == "AdminSuperFoda@gmail.com":
                         print(
                             f"Bem vindo(a) Admin {lista_usuarios[i].nome}!\n")
                         usuario_logado.nome = lista_usuarios[i].nome
