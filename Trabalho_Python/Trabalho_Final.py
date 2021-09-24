@@ -305,7 +305,6 @@ def consulta_cliente(lista_usuarios):
         if cpf_consulta == usuario.cpf:
             print(f"O nome do cliente é {usuario.nome}")
             print(f"O email do cliente é {usuario.email}")
-            print(f"A senha do cliente é {usuario.senha}\n")
         else:
             print()
 
@@ -365,7 +364,7 @@ def compra(usuario_logado):
         if variavel_temporaria_pra_testar_limite_credito >= usuario_logado.limitecredito:
             usuario_logado.balanço = variavel_temporaria_pra_testar_limite_credito
             print(
-                f"Produto {usuario_logado.lista_carrinho[produto_comprar]}comprado com sucesso! Ele chegará a você em até 14 dias.")
+                f"Produto {usuario_logado.lista_carrinho[produto_comprar].nome}comprado com sucesso! Ele chegará a você em até 14 dias.")
             tira_do_carrinho = input(
                 "Deseja retirar o produto de seu carrinho? Digite 'sim' para confirmar: ")
             if tira_do_carrinho.upper() == "SIM":
@@ -408,12 +407,6 @@ def Add_Carrinho(usuario_logado, lista_usuarios, lista_produtos):
                     f"Produto {lista_produtos[selecione_produto].nome} adicionado ao carrinho")
                 usuario_logado.lista_carrinho.append(
                     lista_produtos[selecione_produto])
-                '''for i in range(len(lista_usuarios)): #para o ususario logado e o usuario na lista_ususarios estarem alinhados
-                    if lista_usuarios[i].email == usuario_logado.email:
-                        lista_usuarios[i].lista_carrinho = usuario_logado.lista_carrinho
-                        print(lista_usuarios[0].nome)
-                        print(lista_usuarios[0].lista_carrinho[-1].nome)
-                        return'''
             else:
                 print("Produto não adicionado.")
                 return
@@ -497,6 +490,30 @@ def novo_produto(lista_produtos):
             else:
                 continue
 
+# new novo produto
+
+
+def novo_produtosssssssss(lista_produtos):
+    produto = produtos()
+    produto.numero = int(input("Digite o numero do novo produto: "))
+    for i in range(len(lista_produtos)):
+        if produto.numero == lista_produtos[i].numero:
+            print("Esse produto ja existe")
+            return
+    produto.nome = input("Digite o nome do novo produto: ")
+    produto.marca = input("Digite a marca do novo produto: ")
+    confirme = input(
+        f"Você está adicionando o produto {produto.nome} da marca '{produto.marca}', deseja continuar? Digite 'sim' para confirmar ou 'não' para retornar': ")
+    if confirme.upper() == "SIM":
+        produto.valor = float(input("Digite o preço do novo produto: "))
+        produto.origem = input("Digite a origem do novo produto: ")
+        lista_produtos.append(produto)
+        print(
+            f"Produto {produto.nome} da marca {produto.marca} adicionado pelo valor de R${produto.valor}")
+        return lista_produtos
+    else:
+        return
+
 # Menu principal
 
 
@@ -575,7 +592,7 @@ def menu():
                 if len(lista_produtos) == 0:
                     cria_produtos(lista_produtos)
                 listar_produtos(lista_produtos)
-                novo_produto(lista_produtos)
+                novo_produtosssssssss(lista_produtos)
                 listar_produtos(lista_produtos)
             elif nivel_de_permissão[-1] == 1:
                 print("Essa opção é somente para admins\n")
