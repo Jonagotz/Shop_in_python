@@ -209,31 +209,47 @@ def cadastramento(lista_usuarios):
         aux = True
         numTem = 0
         while aux == True:
-            Cpf = input("Digite o seu CPF: ")
-            if numTem > 3:
-                print("Número de tentativas excedido! Tente novamente mais tarde")
-                break
-            for user in lista_usuarios:
-                if Cpf == user.cpf:
-                    print("Esse CPF já existe")
+            try:
+                Cpf = input("Digite o seu CPF: ")
+                cpf = Cpf.replace(".", "").replace("-", "")
+                if cpf.count("0") == 11 or len(
+                        cpf) != 11:  # Zero vezes algo sempre vai dar zero e o CPF vai ser considerado como vdd
+                    print("CPF Inválido!")
                     continue
-                    numTem += 1
-            if len(Cpf) > 11:
-                print("Digite um CPF válido")
-                continue
-                numTem += 1
-            CPF = [int(char) for char in Cpf if char.isdigit()]
-            if CPF == CPF[::-1]:
-                print("CPF inválido")
-                continue
-            for i in range(9, 11):
-                value = sum((CPF[num] * ((i+1) - num) for num in range(0, i)))
-                digit = ((value * 10) % 11) % 10
-                if digit != CPF[i]:
-                    print("CPF inválido")
+
+                soma_a = 0
+                for i in range(9):
+                    # Faz a primeira conta do digito verificador
+                    soma_a += int(cpf[i]) * (10 - i)
+                if (soma_a % 11) < 2:
+                    soma_a = 0
+                else:
+                    soma_a = 11 - soma_a % 11
+                cpf_valido = cpf.replace(cpf[9], str(soma_a))
+
+                soma_b = 0
+                for x in range(10):
+                    # Faz a segunda conta do digito verficiador
+                    soma_b += int(cpf_valido[x]) * (11 - x)
+                if (soma_b % 11) < 2:
+                    soma_b = 0
+                else:
+                    soma_b = 11 - soma_b % 11
+
+                cpf_valido = cpf_valido.replace(cpf_valido[-1], str(soma_b))
+                if cpf != cpf_valido:  # Verifica se o cpf digitado é válido
+                    print("CPF Inválido!")
                     continue
-                    numTem += 1
-            aux = False
+                else:
+                    cpf_format = cpf[0:3] + "." + cpf[3:6] + \
+                        "." + cpf[6:9] + "-" + cpf[9:11]
+                    aux = False
+                    continue
+
+            except (ValueError, IndexError):
+                print("CPF Inválido!")
+                continue
+
         # pedindo email
         aux = True
         numTem = 0
@@ -306,8 +322,8 @@ def consulta_cliente(lista_usuarios):
     cpf_consulta = input("Digite o CPF: ")
     for usuario in lista_usuarios:
         if cpf_consulta == usuario.cpf:
-            print(f"O nome do cliente é {usuario.nome}")
-            print(f"O email do cliente é {usuario.email}")
+            print(f"\nO nome do cliente é {usuario.nome}")
+            print(f"O email do cliente é {usuario.email}\n")
         else:
             print()
 
